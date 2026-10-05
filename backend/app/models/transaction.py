@@ -3,14 +3,29 @@ from typing import TYPE_CHECKING
 from uuid import UUID
 
 from flask_sqlalchemy.model import Model
-from sqlalchemy import Date, DateTime, Numeric, String, Uuid
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy import (
+    CheckConstraint, 
+    Date, 
+    DateTime, 
+    Numeric, 
+    String, 
+    Uuid, 
+    ForeignKey, 
+    ForeignKeyConstraint
+)
+from sqlalchemy.orm import (
+    Mapped, 
+    mapped_column, 
+    relationship
+)
 
+from app.models.category import Category
 from app.extensions import db
 
 
 if TYPE_CHECKING:
     BaseModel = Model
+    from app.models.user import User
 else:
     BaseModel = db.Model
 
@@ -26,6 +41,7 @@ class Transaction(BaseModel):
 
     user_id: Mapped[UUID] = mapped_column(
         Uuid,
+        ForeignKey("users.id"),
         nullable=False,
     )
 
@@ -64,4 +80,36 @@ class Transaction(BaseModel):
         DateTime(timezone=True),
         nullable=False,
         server_default=db.text("CURRENT_TIMESTAMP"),
+    )
+    
+    __table_args__ = (
+        ForeignKeyConstraint(
+            ["category_id", "user_id"],
+            ["categories.id", "categories.user_id"],
+        ),
+        CheckConstraint(
+            "type IN ('income', 'expense')",
+            name="ck_transactions_type",
+        ),
+        CheckConstraint(
+            "amount > 0",
+            name="ck_transactions_amount_positive",
+        ),
+    )
+    
+    user: Mapped["User"] = relationship(
+        "User",
+        back_populates="transactions",
+    )
+
+    category: Mapped["Category"] = relationship(
+        "Category",
+        primaryjoin=(
+            "and_("
+            "Transaction.category_id == Category.id, "
+            "Transaction.user_id == Category.user_id"
+            ")"
+        ),
+        foreign_keys="Transaction.category_id",
+        back_populates="transactions",
     )

@@ -4,12 +4,14 @@ from uuid import UUID
 
 from flask_sqlalchemy.model import Model
 from sqlalchemy import DateTime, String, Uuid
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.extensions import db
 
 if TYPE_CHECKING:
     BaseModel = Model
+    from app.models.category import Category
+    from app.models.transaction import Transaction
 else:
     BaseModel = db.Model
 
@@ -49,4 +51,16 @@ class User(BaseModel):
         DateTime(timezone=True),
         nullable=False,
         server_default=db.text("CURRENT_TIMESTAMP"),
+    )
+    
+    categories: Mapped[list["Category"]] = relationship(
+        "Category",
+        back_populates="user",
+        cascade="all, delete-orphan",
+    )
+
+    transactions: Mapped[list["Transaction"]] = relationship(
+        "Transaction",
+        back_populates="user",
+        cascade="all, delete-orphan",
     )
