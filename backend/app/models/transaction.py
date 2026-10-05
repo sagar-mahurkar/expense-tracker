@@ -4,6 +4,7 @@ from uuid import UUID
 
 from flask_sqlalchemy.model import Model
 from sqlalchemy import (
+    Index,
     CheckConstraint, 
     Date, 
     DateTime, 
@@ -94,6 +95,11 @@ class Transaction(BaseModel):
         CheckConstraint(
             "amount > 0",
             name="ck_transactions_amount_positive",
+        ),
+        Index(
+            "idx_transactions_user_date",
+            "user_id",
+            "transaction_date",
         ),
     )
     
