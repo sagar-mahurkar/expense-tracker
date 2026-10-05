@@ -1,7 +1,6 @@
 from flask import Flask, jsonify
 
 from app.errors.exceptions import AppError
-from flask_jwt_extended.exceptions import JWTExtendedException
 
 
 def register_error_handlers(app: Flask) -> None:
