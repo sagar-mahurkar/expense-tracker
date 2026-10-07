@@ -16,11 +16,13 @@ from app.modules.transactions.route import transactions_bp
 from app.modules.summary.route import summary_bp
 from app.config.jwt import configure_jwt
 
-def create_app():
+def create_app(config_class: type[Config] = Config):
     app = Flask(__name__)
-    app.config.from_object(Config)
+    app.config.from_object(config_class)
     
-    initialize_database()
+    if not app.config.get("TESTING"):
+        initialize_database()
+
     db.init_app(app)
     jwt.init_app(app)
     configure_jwt(jwt)
