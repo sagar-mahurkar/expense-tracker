@@ -13,6 +13,7 @@ from app.errors.handlers import register_error_handlers
 from app.modules.auth.route import auth_bp
 from app.modules.categories.route import categories_bp
 from app.modules.transactions.route import transactions_bp
+from app.modules.summary.route import summary_bp
 from app.config.jwt import configure_jwt
 
 def create_app():
@@ -30,5 +31,6 @@ def create_app():
     app.register_blueprint(auth_bp)
     app.register_blueprint(categories_bp)
     app.register_blueprint(transactions_bp)
+    app.register_blueprint(summary_bp)
     
     return app
