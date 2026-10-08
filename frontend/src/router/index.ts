@@ -1,11 +1,11 @@
 import { createRouter, createWebHistory } from "vue-router";
-
-import AppLayout from "../layouts/AppLayout.vue";
 import CategoriesPage from "../pages/CategoriesPage.vue";
 import DashboardPage from "../pages/DashboardPage.vue";
 import LoginPage from "../pages/LoginPage.vue";
 import RegisterPage from "../pages/RegisterPage.vue";
 import TransactionsPage from "../pages/TransactionsPage.vue";
+import AppLayout from "../layouts/AppLayout.vue";
+import { requireAuth } from "./guards";
 
 const router = createRouter({
   history: createWebHistory(),
@@ -13,6 +13,7 @@ const router = createRouter({
     {
       path: "/",
       component: AppLayout,
+      beforeEnter: requireAuth,
       children: [
         {
           path: "",

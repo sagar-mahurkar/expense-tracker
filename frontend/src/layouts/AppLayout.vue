@@ -1,5 +1,14 @@
 <script setup lang="ts">
-import { RouterLink, RouterView } from "vue-router";
+import { RouterLink, RouterView, useRouter } from "vue-router";
+import { useAuthStore } from "../stores/auth";
+
+const router = useRouter();
+const authStore = useAuthStore();
+
+const handleLogout = () => {
+  authStore.logout();
+  router.push("/login");
+};
 </script>
 
 <template>
@@ -11,18 +20,26 @@ import { RouterLink, RouterView } from "vue-router";
 
       <div class="navbar-nav me-auto">
         <RouterLink to="/" class="nav-link">Dashboard</RouterLink>
+
         <RouterLink to="/transactions" class="nav-link">
           Transactions
         </RouterLink>
+
         <RouterLink to="/categories" class="nav-link">
           Categories
         </RouterLink>
       </div>
 
       <div class="d-flex align-items-center gap-3">
-        <span class="text-dark">Sagar Mahurkar</span>
+        <span class="text-dark">
+          {{ authStore.user?.name }}
+        </span>
 
-        <button type="button" class="btn btn-outline-secondary btn-sm">
+        <button
+          type="button"
+          class="btn btn-outline-secondary btn-sm"
+          @click="handleLogout"
+        >
           Logout
         </button>
       </div>

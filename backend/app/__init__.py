@@ -6,7 +6,7 @@ from flask import Flask
 
 from app.config.settings import Config
 from app.database.initializer import initialize_database
-from app.extensions import db, jwt
+from app.extensions import db, jwt, cors
 from app.modules.health.route import health_bp
 
 from app.errors.handlers import register_error_handlers
@@ -25,6 +25,15 @@ def create_app(config_class: type[Config] = Config):
 
     db.init_app(app)
     jwt.init_app(app)
+    cors.init_app(
+        app,
+        resources={
+            r"/api/*": {
+                "origins": app.config["FRONTEND_ORIGIN"],
+            }
+        },
+    )
+        
     configure_jwt(jwt)
     
     register_error_handlers(app)
