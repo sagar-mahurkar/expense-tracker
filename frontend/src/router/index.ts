@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from "vue-router";
 
+import AppLayout from "../layouts/AppLayout.vue";
 import CategoriesPage from "../pages/CategoriesPage.vue";
 import DashboardPage from "../pages/DashboardPage.vue";
 import LoginPage from "../pages/LoginPage.vue";
@@ -11,8 +12,24 @@ const router = createRouter({
   routes: [
     {
       path: "/",
-      name: "dashboard",
-      component: DashboardPage,
+      component: AppLayout,
+      children: [
+        {
+          path: "",
+          name: "dashboard",
+          component: DashboardPage,
+        },
+        {
+          path: "transactions",
+          name: "transactions",
+          component: TransactionsPage,
+        },
+        {
+          path: "categories",
+          name: "categories",
+          component: CategoriesPage,
+        },
+      ],
     },
     {
       path: "/login",
@@ -23,16 +40,6 @@ const router = createRouter({
       path: "/register",
       name: "register",
       component: RegisterPage,
-    },
-    {
-      path: "/transactions",
-      name: "transactions",
-      component: TransactionsPage,
-    },
-    {
-      path: "/categories",
-      name: "categories",
-      component: CategoriesPage,
     },
   ],
 });

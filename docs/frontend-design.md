@@ -8,7 +8,6 @@
 
 ## 2. Frontend Structure
 
-```text
 frontend/
 └── src/
     ├── assets/
@@ -22,47 +21,129 @@ frontend/
     ├── App.vue
     ├── main.ts
     └── style.css
-```
 
-### Directory Responsibilities
+### Responsibilities
 
-| Directory | Responsibility |
-| --- | --- |
-| `components/` | Reusable UI components |
-| `layouts/` | Application-level page layouts |
-| `pages/` | Route-level views |
-| `router/` | Vue Router configuration |
-| `services/` | HTTP/API communication |
-| `stores/` | Client-side application and authentication state |
-| `types/` | Shared TypeScript types |
-| `assets/` | Static frontend assets |
+- `components/` — Reusable UI components.
+- `layouts/` — Application-level layouts.
+- `pages/` — Route-level views.
+- `router/` — Vue Router configuration.
+- `services/` — HTTP/API communication.
+- `stores/` — Application and authentication state.
+- `types/` — TypeScript types.
+- `assets/` — Static assets.
 
 ## 3. Architecture Principles
 
 - Keep the frontend clean and maintainable.
-- Keep the MVP scope strict.
+- Keep MVP scope strict.
 - Avoid unnecessary abstractions and over-engineering.
-- Make foundational decisions that allow the application to grow without requiring a rewrite.
-- Introduce additional abstractions only when the application actually needs them.
+- Foundational decisions should allow future growth without requiring a rewrite.
+- Add abstractions only when they are actually needed.
 
-## 4. Planned Dependencies
+## 4. Dependencies
 
-The frontend will use:
-
-- Vue Router for routing and route protection.
+- Vue Router for routing.
 - Pinia for application and authentication state.
 - Axios for API communication.
-
-These dependencies will be added only as they become part of the implementation.
+- Bootstrap for standard UI components and responsive layout.
 
 ## 5. Development Tooling
 
-- Use **Vue - Official** for Vue 3 + TypeScript language support in VS Code.
+- Use Vue - Official for Vue 3 + TypeScript language support in VS Code.
 - Do not use Vetur alongside Vue - Official.
-- Do not add custom Vue module declarations to work around editor diagnostics when the standard Vue tooling is correctly configured.
+- Do not add custom Vue module declarations to work around editor diagnostics when standard Vue tooling is correctly configured.
 
-## 6. Current Status
+## 6. Application Layout
 
-Frontend setup is in progress.
+Protected application pages use a shared `AppLayout.vue`.
 
-The default Vite demo components and assets have been removed. The application-specific frontend structure will be established next.
+The application layout provides:
+
+- Application navigation.
+- Links to Dashboard, Transactions, and Categories.
+- Logged-in user identity.
+- Logout action.
+- Shared page container through `RouterView`.
+
+Login and registration pages do not use the application layout.
+
+The navbar uses a light Bootstrap style with a subtle bottom border.
+
+## 7. Implemented MVP UI
+
+### Authentication
+
+- Login page.
+- Registration page.
+- Bootstrap-based forms.
+- API integration deferred to Phase 12.
+
+### Dashboard
+
+- Dashboard heading and description.
+- Balance summary.
+- Income summary.
+- Expense summary.
+- Recent transactions section.
+
+### Transactions
+
+- Transaction table.
+- Add Transaction modal.
+- Transaction form containing:
+  - Type
+  - Amount
+  - Category
+  - Description
+  - Transaction date
+- Search by description.
+- Type filter.
+- Date filter.
+- Clear filters action.
+- Pagination UI.
+- Edit and Delete actions.
+- API integration deferred to Phase 12.
+
+### Categories
+
+- Category table.
+- Add Category modal.
+- Category creation form.
+- Delete action.
+- API integration deferred to Phase 12.
+
+## 8. MVP UI Scope
+
+The frontend currently focuses on the core MVP workflow.
+
+The following are intentionally deferred:
+
+- API integration.
+- Authentication state integration.
+- Real user information.
+- Functional logout.
+- Advanced dashboard visualizations.
+- Additional profile functionality.
+- Additional UI abstractions.
+
+These will only be added when required by the remaining implementation phases.
+
+## 9. Current Status
+
+Phase 10 — Frontend Setup: Complete.
+
+Phase 11 — Frontend UI: UI implementation complete.
+
+Implemented:
+
+- Bootstrap UI foundation.
+- Authentication pages.
+- Dashboard UI.
+- Transactions UI.
+- Categories UI.
+- Shared application layout.
+- Navigation between application pages.
+- Responsive Bootstrap-based layouts.
+
+API integration and authentication state integration are planned for Phase 12.
