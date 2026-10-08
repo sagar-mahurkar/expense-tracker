@@ -1,17 +1,61 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { onMounted, ref } from "vue";
 import CategoryForm from "../components/CategoryForm.vue";
 import CategoryTable from "../components/CategoryTable.vue";
+import {
+  createCategory,
+  deleteCategory,
+  getCategories,
+} from "../services/categories";
+import type { Category } from "../services/categories";
 
+const categories = ref<Category[]>([]);
 const showForm = ref(false);
+const errorMessage = ref("");
 
-const openAddCategory = () => {
-  showForm.value = true;
+const loadCategories = async () => {
+  errorMessage.value = "";
+
+  try {
+    const response = await getCategories();
+    categories.value = response.data;
+  } catch (error: any) {
+    errorMessage.value =
+      error.response?.data?.error?.message ||
+      "Unable to load categories.";
+  }
 };
 
-const closeForm = () => {
-  showForm.value = false;
+const handleCreateCategory = async (
+  data: { name: string; type: "income" | "expense" },
+) => {
+  errorMessage.value = "";
+
+  try {
+    await createCategory(data);
+    showForm.value = false;
+    await loadCategories();
+  } catch (error: any) {
+    errorMessage.value =
+      error.response?.data?.error?.message ||
+      "Unable to create category.";
+  }
 };
+
+const handleDeleteCategory = async (id: string) => {
+  errorMessage.value = "";
+
+  try {
+    await deleteCategory(id);
+    await loadCategories();
+  } catch (error: any) {
+    errorMessage.value =
+      error.response?.data?.error?.message ||
+      "Unable to delete category.";
+  }
+};
+
+onMounted(loadCategories);
 </script>
 
 <template>
@@ -19,27 +63,31 @@ const closeForm = () => {
     <div class="d-flex justify-content-between align-items-center mb-4">
       <div>
         <h1>Categories</h1>
-        <p class="text-muted mb-0">
-          Manage your transaction categories
-        </p>
+        <p class="text-muted mb-0">Manage your transaction categories</p>
       </div>
 
       <button
         type="button"
         class="btn btn-primary"
-        @click="openAddCategory"
+        @click="showForm = true"
       >
         Add Category
       </button>
     </div>
 
+    <div v-if="errorMessage" class="alert alert-danger">
+      {{ errorMessage }}
+    </div>
+
     <div class="card shadow-sm">
       <div class="card-body">
-        <CategoryTable />
+        <CategoryTable
+          :categories="categories"
+          @delete="handleDeleteCategory"
+        />
       </div>
     </div>
 
-    <!-- Add Category Modal -->
     <div
       v-if="showForm"
       class="modal fade show d-block"
@@ -56,12 +104,12 @@ const closeForm = () => {
               type="button"
               class="btn-close"
               aria-label="Close"
-              @click="closeForm"
+              @click="showForm = false"
             ></button>
           </div>
 
           <div class="modal-body">
-            <CategoryForm />
+            <CategoryForm @submit="handleCreateCategory" />
           </div>
 
           <div class="modal-footer">
@@ -76,7 +124,7 @@ const closeForm = () => {
             <button
               type="button"
               class="btn btn-secondary"
-              @click="closeForm"
+              @click="showForm = false"
             >
               Cancel
             </button>
@@ -85,9 +133,6 @@ const closeForm = () => {
       </div>
     </div>
 
-    <div
-      v-if="showForm"
-      class="modal-backdrop fade show"
-    ></div>
+    <div v-if="showForm" class="modal-backdrop fade show"></div>
   </div>
 </template>
