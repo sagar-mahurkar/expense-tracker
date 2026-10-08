@@ -1,9 +1,10 @@
 from datetime import date
 from uuid import UUID
 
-from sqlalchemy import func, select
+from sqlalchemy import func, or_, select
 
 from app.extensions import db
+from app.models.category import Category
 from app.models.transaction import Transaction
 
 
@@ -30,7 +31,10 @@ def find_transactions_by_user(
 
     if search is not None:
         filters.append(
-            Transaction.description.ilike(f"%{search}%")
+            or_(
+                Transaction.description.ilike(f"%{search}%"),
+                Category.name.ilike(f"%{search}%"),
+            )
         )
 
     if start_date is not None:
@@ -46,6 +50,11 @@ def find_transactions_by_user(
     count_statement = (
         select(func.count())
         .select_from(Transaction)
+        .join(
+            Category,
+            (Category.id == Transaction.category_id)
+            & (Category.user_id == Transaction.user_id),
+        )
         .where(*filters)
     )
 
@@ -53,6 +62,11 @@ def find_transactions_by_user(
 
     statement = (
         select(Transaction)
+        .join(
+            Category,
+            (Category.id == Transaction.category_id)
+            & (Category.user_id == Transaction.user_id),
+        )
         .where(*filters)
         .order_by(Transaction.transaction_date.desc())
         .offset((page - 1) * per_page)
