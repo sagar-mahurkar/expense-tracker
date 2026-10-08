@@ -86,6 +86,20 @@ def test_transaction_search(auth_client, transaction):
     assert data["pagination"]["total"] == 1
 
 
+def test_transaction_search_by_category(
+    auth_client,
+    transaction,
+):
+    response = auth_client.get(
+        "/api/v1/transactions?search=Food"
+    )
+
+    assert response.status_code == 200
+
+    data = response.get_json()
+
+    assert data["pagination"]["total"] == 1
+
 def test_transaction_date_filter(auth_client, transaction):
     response = auth_client.get(
         "/api/v1/transactions"

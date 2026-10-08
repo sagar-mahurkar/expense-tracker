@@ -134,4 +134,54 @@ Testing remains MVP-focused.
 
 No additional testing frameworks or unnecessary infrastructure were introduced.
 
-Frontend and end-to-end testing will be added after the frontend and integration phases.
+## 8. Frontend & End-to-End Testing
+
+Phase 13 included manual browser-based end-to-end testing of the critical MVP flows.
+
+### Authentication Testing
+
+- Login
+- Logout
+- Protected route behavior
+- Authentication persistence after refresh
+
+### Categories Testing
+
+- Load categories
+- Create category
+- Delete category
+
+### Transactions Testing
+
+- Create transaction
+- Update transaction
+- Delete transaction
+- Description search
+- Category search
+- Type filtering
+- Date filtering
+- Clear filters
+- Pagination / per-page selection
+
+### Dashboard Integration
+
+- Transaction changes reflected in dashboard totals
+
+### E2E Results
+
+All critical MVP flows were successfully verified.
+
+Two integration issues were discovered and fixed during E2E testing:
+
+1. Transaction date filtering:
+   - Backend already expected `start_date` and `end_date`.
+   - Frontend was sending the incorrect `date` parameter.
+   - Frontend integration was corrected.
+
+2. Transaction category search:
+   - Backend search initially covered only transaction descriptions.
+   - Category-name search was added with a user-scoped category join.
+   - A regression test was added.
+   - The complete backend test suite passed with 25 tests.
+
+Filter state is not persisted across browser refreshes. This is intentional for the MVP.

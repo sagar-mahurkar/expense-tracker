@@ -38,7 +38,8 @@ const loadTransactions = async () => {
     const response = await getTransactions({
       type: type.value || undefined,
       search: search.value || undefined,
-      date: date.value || undefined,
+      start_date: date.value || undefined,
+      end_date: date.value || undefined,
       page: currentPage.value,
       per_page: perPage.value,
     });
@@ -75,6 +76,15 @@ const getCategoryName = (categoryId: string) => {
 const handleSearch = () => {
   currentPage.value = 1;
   loadTransactions();
+};
+
+const handleClearFilters = async () => {
+  search.value = "";
+  type.value = "";
+  date.value = "";
+  currentPage.value = 1;
+
+  await loadTransactions();
 };
 
 const handleTypeChange = () => {
@@ -174,7 +184,7 @@ onMounted(async () => {
     <div class="card mb-4">
       <div class="card-body">
         <div class="row g-3">
-          <div class="col-md-5">
+          <div class="col-md-4">
             <label class="form-label">Search</label>
             <div class="input-group">
               <input
@@ -231,6 +241,18 @@ onMounted(async () => {
               <option :value="20">20</option>
               <option :value="50">50</option>
             </select>
+          </div>
+
+          <div class="col-md-1">
+            <label class="form-label">&nbsp;</label>
+
+            <button
+              type="button"
+              class="btn btn-outline-secondary w-100"
+              @click="handleClearFilters"
+            >
+              Clear
+            </button>
           </div>
         </div>
       </div>

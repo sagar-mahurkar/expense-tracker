@@ -37,7 +37,8 @@ export const getTransactions = async (
   params: {
     type?: string;
     search?: string;
-    date?: string;
+    start_date?: string;
+    end_date?: string;
     page?: number;
     per_page?: number;
   } = {},
