@@ -11,6 +11,11 @@ class Config:
         f"@{os.getenv('DB_HOST')}:{os.getenv('DB_PORT')}"
         f"/{os.getenv('DB_NAME')}"
     )
+    
+    FRONTEND_ORIGIN = os.getenv(
+        "FRONTEND_ORIGIN",
+        "http://localhost:5173",
+    )
 
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     

@@ -1,23 +1,13 @@
 <script setup lang="ts">
-const categories = [
-  {
-    id: 1,
-    name: "Salary",
-  },
-  {
-    id: 2,
-    name: "Food",
-  },
-  {
-    id: 3,
-    name: "Utilities",
-  },
-];
+import type { Category } from "../services/categories";
 
-const handleDelete = (categoryName: string) => {
-  // API integration will be implemented in Phase 12.
-  console.log("Delete category", categoryName);
-};
+defineProps<{
+  categories: Category[];
+}>();
+
+const emit = defineEmits<{
+  delete: [id: string];
+}>();
 </script>
 
 <template>
@@ -26,6 +16,7 @@ const handleDelete = (categoryName: string) => {
       <thead>
         <tr>
           <th>Name</th>
+          <th>Type</th>
           <th class="text-end">Actions</th>
         </tr>
       </thead>
@@ -34,14 +25,33 @@ const handleDelete = (categoryName: string) => {
         <tr v-for="category in categories" :key="category.id">
           <td>{{ category.name }}</td>
 
+          <td>
+            <span
+              class="badge"
+              :class="
+                category.type === 'income'
+                  ? 'text-bg-success'
+                  : 'text-bg-danger'
+              "
+            >
+              {{ category.type }}
+            </span>
+          </td>
+
           <td class="text-end">
             <button
               type="button"
               class="btn btn-sm btn-outline-danger"
-              @click="handleDelete(category.name)"
+              @click="emit('delete', category.id)"
             >
               Delete
             </button>
+          </td>
+        </tr>
+
+        <tr v-if="categories.length === 0">
+          <td colspan="3" class="text-center text-muted py-4">
+            No categories found.
           </td>
         </tr>
       </tbody>

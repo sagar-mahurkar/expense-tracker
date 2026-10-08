@@ -1,18 +1,35 @@
 <script setup lang="ts">
 import { ref } from "vue";
-import { RouterLink } from "vue-router";
+import { RouterLink, useRouter } from "vue-router";
+import { register } from "../services/auth";
 
 const name = ref("");
 const email = ref("");
 const password = ref("");
+const errorMessage = ref("");
+const isLoading = ref(false);
 
-const handleSubmit = () => {
-  // API integration will be implemented in Phase 12.
-  console.log("Registration form submitted", {
-    name: name.value,
-    email: email.value,
-    password: password.value,
-  });
+const router = useRouter();
+
+const handleSubmit = async () => {
+  errorMessage.value = "";
+  isLoading.value = true;
+
+  try {
+    await register({
+      name: name.value,
+      email: email.value,
+      password: password.value,
+    });
+
+    await router.push("/login");
+  } catch (error: any) {
+    errorMessage.value =
+      error.response?.data?.error?.message ||
+      "Unable to register. Please try again.";
+  } finally {
+    isLoading.value = false;
+  }
 };
 </script>
 
@@ -20,6 +37,10 @@ const handleSubmit = () => {
   <div class="d-flex justify-content-center align-items-center vh-100">
     <div class="card shadow p-5" style="width: 500px">
       <h1 class="mb-4 text-center">Register</h1>
+
+      <div v-if="errorMessage" class="alert alert-danger">
+        {{ errorMessage }}
+      </div>
 
       <form @submit.prevent="handleSubmit">
         <div class="mb-3">
@@ -58,8 +79,12 @@ const handleSubmit = () => {
           />
         </div>
 
-        <button type="submit" class="btn btn-primary w-100">
-          Register
+        <button
+          type="submit"
+          class="btn btn-primary w-100"
+          :disabled="isLoading"
+        >
+          {{ isLoading ? "Registering..." : "Register" }}
         </button>
       </form>
 
